@@ -32,17 +32,23 @@ namespace SecureEVotingSystem {
             decryptor = _decryptor;
         }
 
-        public bool BlindSigningKey(string password, string numberOfUser, int blindKey,
+        public bool BlindSigningKey(string criptedPassword, string criptedNumberOfUser,
+            int blindHashKey,
             out int blindedSignedKey) {
+            string password = decryptor.Crypt(criptedPassword);
+            string numberOfUser = decryptor.Crypt(criptedNumberOfUser);
             if (!(votersPasswords.ContainsKey(numberOfUser) &&
                 votersPasswords[numberOfUser] == password)) {
                 blindedSignedKey = 0;
                 return false;
             }
-            blindedSignedKey = decryptor.Crypt(blindKey);
+            autorizedVoters.Add(numberOfUser);
+            blindedSignedKey = decryptor.Crypt(blindHashKey);
             return true;
         }
 
-
+        public List<string> GetListOfAutorized() {
+            return autorizedVoters;
+        }
     }
 }

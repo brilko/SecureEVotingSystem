@@ -52,5 +52,13 @@ namespace SecureEVotingSystem {
 
         }
 
+
+        [Test]
+        public void SomeTest() {
+            string q = "qweqweqweqw";
+            int hash = q.GetHashCode();
+            Assert.IsTrue(true);
+        }
+
     }
 }

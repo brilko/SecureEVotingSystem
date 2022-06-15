@@ -30,6 +30,17 @@ namespace SecureEVotingSystem {
             return ExpMod(number, key.Exponent, key.Modulus);
         }
 
+        //Ключи подобраны так, чтобы модули были больше 258
+        private static int maxHash = 250; 
+
+        public static int GetHash(RSAKey key) {
+            return Math.Abs(key.GetHashCode()) % maxHash;
+        }
+
+        public static int GetHash(string text) {
+            return Math.Abs(text.GetHashCode()) % maxHash;
+        }
+
         public static bool TryGetInverse(int a, int n, out int inv) {
             int t = 0;
             int r = n;
