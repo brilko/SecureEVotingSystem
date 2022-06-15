@@ -6,11 +6,80 @@
         xmlns:local="clr-namespace:SecureEVotingSystem"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
+    <Window.Resources>
+        <Style x:Key="StdBorder">
+            <Setter Property="Border.BorderBrush" Value="Black"/>
+            <Setter Property="Border.BorderThickness" Value="1"/>
+        </Style>
+        <Style x:Key="Headers">
+            <Setter Property="TextBlock.HorizontalAlignment" Value="Center"></Setter>
+        </Style>
+    </Window.Resources>
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition></ColumnDefinition>
             <ColumnDefinition></ColumnDefinition>
             <ColumnDefinition></ColumnDefinition>
         </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition></RowDefinition>
+            <RowDefinition></RowDefinition>
+        </Grid.RowDefinitions>
+        <Border Grid.Column="0" Grid.Row="0" Style="{StaticResource StdBorder}">
+            <StackPanel>
+                <TextBlock Style="{StaticResource Headers}">Избиратель</TextBlock>
+                <Border Style="{StaticResource StdBorder}">
+                    <TextBlock Text="{Binding Path=Elector}"/>
+                </Border>
+            </StackPanel>
+        </Border>
+        <Border Grid.Column="1"  Grid.Row="0" Style="{StaticResource StdBorder}">
+            <StackPanel>
+                <TextBlock Style="{StaticResource Headers}">Агенство</TextBlock>
+                <Border Style="{StaticResource StdBorder}">
+                    <TextBlock Text="{Binding Path=Agency}"/>
+                </Border>
+            </StackPanel>
+        </Border>
+        <Border Grid.Column="2"  Grid.Row="0" Style="{StaticResource StdBorder}">
+            <StackPanel>
+                <TextBlock Style="{StaticResource Headers}">Регистратор</TextBlock>
+                <Border Style="{StaticResource StdBorder}">
+                    <TextBlock Text="{Binding Path=Validator}"/>
+                </Border>
+            </StackPanel>
+        </Border>
+        <Border Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="1"  
+                Visibility="{Binding Path=IsHidenAutorization}">
+            <StackPanel>
+                <TextBlock>Авторизация</TextBlock>
+                <TextBox Text="{Binding Path=Name}"></TextBox>
+                <TextBox Text="{Binding Path=Password}"></TextBox>
+                <Button Command="{Binding OpenVoting}">Авторизоваться</Button>
+                <Button Command="{Binding OpenTelling}">Подвести итоги</Button>
+            </StackPanel>
+        </Border>
+        <Border Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="1"
+                Visibility="{Binding Path=IsHidenVoting}">
+            <StackPanel>
+                <TextBlock>Голосование</TextBlock>
+                <Button Command="{Binding Voting1}">Проголосовать за 1</Button>
+                <Button Command="{Binding Voting2}">Проголосовать за 2</Button>
+            </StackPanel>
+        </Border>
+        <Border Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="1"
+                Visibility="{Binding Path=IsHidenTelling}">
+            <StackPanel>
+                <TextBlock>Результаты голосования</TextBlock>
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="За 1 проголосовало "></TextBlock>
+                    <TextBlock Text="{Binding Path=Result1}"></TextBlock>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="За 2 проголосовало "></TextBlock>
+                    <TextBlock Text="{Binding Path=Result2}"></TextBlock>
+                </StackPanel>
+            </StackPanel>
+        </Border>
     </Grid>
 </Window>

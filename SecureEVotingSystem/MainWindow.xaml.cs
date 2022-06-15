@@ -19,8 +19,13 @@ namespace SecureEVotingSystem {
     /// </summary>
     public partial class MainWindow : Window {
         public MainWindow() {
-            InitializeComponent();//
-            //
+            InitializeComponent();
+            DataContext = new ApplicationViewModel();
         }
     }
+
+
 }
+
+//TODO:Представление модели - лог того, что происходит с моделью
+//TODO:Модель - реализация алгоритма
