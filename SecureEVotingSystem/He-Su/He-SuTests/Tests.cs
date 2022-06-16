@@ -18,10 +18,17 @@ namespace SecureEVotingSystem {
             Assert.AreEqual(testText, encrypted);
         }
 
-        [Test]
-        public void IsExpModWork() {
-            Assert.AreEqual(4, Crypting.ExpMod(2, 2, 5));
-            Assert.AreEqual(2, Crypting.ExpMod(3, 3, 5));
+        [TestCase(4, 2, 2, 5)]
+        [TestCase(2, 3, 3, 5)]
+        [TestCase(250, 250, 91, 403)]
+        [TestCase(251, 251, 91, 403)]
+        [TestCase(236, 50, 91, 403)]
+        [TestCase(25, 25, 91, 403)]
+        [TestCase(30, 30, 91, 403)]
+        [TestCase(90, 90, 91, 403)]
+        [TestCase(91, 91, 91, 403)]
+        public void IsExpModWork(int result, int b, int e, int m) {
+            Assert.AreEqual(result, Crypting.ExpMod(b, e, m));
         }
 
         [TestCase(11, 21, 2, true)]
@@ -42,16 +49,29 @@ namespace SecureEVotingSystem {
             
             Assert.AreEqual(1,
                 encryptor.Key.Exponent * decryptor.Key.Exponent % ((p - 1) * (q - 1)));
-            
-            Assert.AreEqual(testText, decryptor.Crypt(encryptor.Crypt(testText)));
-            Assert.AreEqual(testText, encryptor.Crypt(decryptor.Crypt(testText)));
+
+            var cryptingText1 = encryptor.Crypt(testText);
+            var cryptingText2 = decryptor.Crypt(cryptingText1);
+
+            Assert.AreEqual(testText, cryptingText2);
+
+            cryptingText1 = decryptor.Crypt(testText);
+            cryptingText2 = encryptor.Crypt(cryptingText1);
+
+            Assert.AreEqual(testText, cryptingText2);
 
             int testNumber = 250;
-            Assert.AreEqual(testNumber, decryptor.Crypt(encryptor.Crypt(testNumber)));
-            Assert.AreEqual(testNumber, encryptor.Crypt(decryptor.Crypt(testNumber)));
+            var cryptingNumber1 = encryptor.Crypt(testNumber);
+            var cryptingNumber2 = decryptor.Crypt(cryptingNumber1);
+
+            Assert.AreEqual(testNumber, cryptingNumber2);
+
+            cryptingNumber1 = decryptor.Crypt(testNumber);
+            cryptingNumber2 = encryptor.Crypt(cryptingNumber1);
+
+            Assert.AreEqual(testNumber, cryptingNumber2);
 
         }
-
 
         [Test]
         public void SomeTest() {

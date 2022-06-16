@@ -7,11 +7,13 @@ using System.Text;
 namespace SecureEVotingSystem {
     static class Crypting {
         public static string CryptingText(string text, Func<int, int> crypt) {
-            return new string(text.ToCharArray()
-                .Select(c => (int)c)
-                .Select(n => crypt(n))
-                .Select(n => (char)n)
-                .ToArray());
+            var charArray = text.ToCharArray();
+            var codes = charArray.Select(c => (int)c);
+            var cryptCodes = codes.Select(n => crypt(n));
+            var cryptChars = cryptCodes.Select(n => (char)n);
+            var arrayCriptCodes = cryptChars.ToArray();
+            var cryptText = new string(arrayCriptCodes);
+            return cryptText;
         }
 
         public static int ExpMod(int b, int e, int m) {

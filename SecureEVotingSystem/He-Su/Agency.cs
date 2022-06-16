@@ -12,7 +12,7 @@ namespace SecureEVotingSystem {
 
         public bool CheckValidatorSignKeyVoter(RSACryptor validatorEncryptor, 
             int signedHashKey, RSAKey voterOpenKey) {
-            if (voterOpenKey.GetHashCode() == validatorEncryptor.Crypt(signedHashKey)) {
+            if (Crypting.GetHash(voterOpenKey) == validatorEncryptor.Crypt(signedHashKey)) {
                 listOfAutorizedKeys.Add(voterOpenKey);
                 return true;
             }

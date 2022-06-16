@@ -60,19 +60,19 @@ namespace SecureEVotingSystem {
             } 
         }
 
-        private string validator;
-        public string Validator {
-            get => validator;
+        private string validatorLog;
+        public string ValidatorLog {
+            get => validatorLog;
             set{
-                validator = value;
+                validatorLog = value;
                 OnPropertyChanged("Validator");
             }
         }
-        private string agency;
-        public string Agency {
-            get => agency;
+        private string agencyLog;
+        public string AgencyLog {
+            get => agencyLog;
             set {
-                agency = value;
+                agencyLog = value;
                 OnPropertyChanged("Agency");
             }
         }
@@ -127,9 +127,14 @@ namespace SecureEVotingSystem {
         }
 
 
+        private Dictionary<Tuple<string, string>, Voter> autorizedVoters = new Dictionary<Tuple<string, string>, Voter>();
+        private Voter currentVoter;
+        private Agency agency = new Agency();
+        private Validator validator = new Validator();
+
         public ApplicationViewModel() {
-            Validator = "Лог регистратора";
-            Agency = "Лог агенства";
+            ValidatorLog = "Лог регистратора";
+            AgencyLog = "Лог агенства";
             Elector = "Лог избирателя";
             TypeOfWindow = WindowType.Autorization;
             Name = "Введите имя";
@@ -141,6 +146,24 @@ namespace SecureEVotingSystem {
         public ICommand OpenVoting {
             get => new DelegateCommand(
                     (obj) => {
+                        var autorizedVoterDictionaryKey = Tuple.Create(Name, Password);
+                        if (autorizedVoters.ContainsKey(autorizedVoterDictionaryKey)) {
+                            currentVoter = autorizedVoters[autorizedVoterDictionaryKey];
+                        } else {
+                            currentVoter = new Voter(Name, Password, validator.Encryptor);
+                            autorizedVoters.Add(autorizedVoterDictionaryKey, currentVoter);
+                        }
+                        var blindKey = currentVoter.GetSignedKey(validator.Encryptor);
+                        var criptedNumber = validator.Encryptor.Crypt(currentVoter.Number);
+                        var criptedPassword = validator.Encryptor.Crypt(currentVoter.Password);
+                        if (!validator.BlindSigningKey(criptedPassword, criptedNumber, blindKey, out int blindedSignedKey)) {
+                            return;
+                        }
+                        if(!currentVoter.DeblindAndCheckValidatorSign(validator.Encryptor, blindedSignedKey, 
+                            out RSACryptor voterEncryptor, out int signedKey))
+                            return;
+                        if(!agency.CheckValidatorSignKeyVoter(validator.Encryptor, signedKey, voterEncryptor.Key))
+                            return;
                         TypeOfWindow = WindowType.Voting;
                     }
                 );

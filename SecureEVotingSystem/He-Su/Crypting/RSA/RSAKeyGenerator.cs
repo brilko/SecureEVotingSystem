@@ -8,7 +8,7 @@ namespace SecureEVotingSystem {
             out RSACryptor encryptor, out RSACryptor decryptor) {
             int fn = (p - 1) * (q - 1);
             int e = 0, d = 0;
-            for (int i = fn / 2; i <= fn; i++) {
+            for (int i = fn / 4; i <= fn; i++) {
                 if (Crypting.TryGetInverse(i, fn, out int inv)) {
                     e = i;
                     d = inv;
